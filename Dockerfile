@@ -32,7 +32,6 @@ RUN apt-get -y update && apt-get -y install \
   libsystemd-dev \ 
   libffi-dev \
   python3-cffi \
-  systemd \
   libssl-dev
 
 # Install python module dependencies.
@@ -43,7 +42,11 @@ RUN pip3 install /tmp/orc8r
 COPY --from=builder /build/python/gen /usr/local/lib/python3.5/dist-packages/
 COPY example/gateway/configs/ /etc/magma
 
+RUN pip3 install gpiozero pigpio
+COPY orc8r/gateway/python/magma/hello /usr/local/lib/python3.5/dist-packages/magma/hello
+
 # Install supervisord
 RUN apt-get install -y supervisor
+RUN ln -s /usr/bin/supervisorctl /usr/bin/systemctl
 COPY orc8r/gateway/supervisord.conf /etc/supervisor/conf.d/supervisord.conf
 CMD ["/usr/bin/supervisord"]

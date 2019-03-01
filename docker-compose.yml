@@ -1,0 +1,11 @@
+version: "3.7"
+
+services:
+  gateway:
+    build:
+      context: ../magma
+      dockerfile: $PWD/Dockerfile
+    volumes:
+      - ~/magma/control_proxy.yml:/etc/magma/control_proxy.yml
+      - ~/magma/snowflake:/etc/snowflake
+      - ~/magma/certs:/var/opt/magma/certs

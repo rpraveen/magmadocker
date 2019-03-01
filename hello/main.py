@@ -25,8 +25,8 @@ class State(Enum):
 
 
 def main():
-    """ main() for led service """
-    service = MagmaService('led')
+    """ main() for hello service """
+    service = MagmaService('hello')
 
     # # leds!!111!1
     # red = LED(9)
