@@ -55,8 +55,8 @@ def _show_pattern(pattern):
 
 
 def main():
-    """ main() for led service """
-    service = MagmaService('led')
+    """ main() for hello service """
+    service = MagmaService('hello')
 
     _show_pattern('rygryg')
 
