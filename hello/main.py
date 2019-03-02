@@ -57,37 +57,35 @@ def _show_pattern(pattern):
 def main():
     """ main() for hello service """
     service = MagmaService('hello')
-
-    _show_pattern('rygryg')
+    logging.getLogger('').setLevel(logging.INFO)
 
     chan = ServiceRegistry.get_rpc_channel('magmad', ServiceRegistry.LOCAL)
     client = Service303Stub(chan)
+    
+    _show_pattern('rygryg')
 
-    loop = asyncio.get_event_loop()
-
-    async def check_magmad_status(t):
+    async def check_magmad_status(interval):
         while True:
-            service_info = client.GetServiceInfo(Void())
-            state = State(service_info.state)
-            logging.info(state)
+	    metrics = client.GetMetrics(Void())
 
-            if state == State.ALIVE:
-                # all_off()
-                # green.blink()
-                pass
-            elif state == State.STOPPED:
-                # all_off()
-                # red.blink()
-                pass
+            status = 0.0
+            for family in metrics.family:
+                if family.name == "308":
+                    status = family.metric[0].gauge.value
+            logging.info("LED: checkin status: %s" % status)
+
+            if status == 1.0:
+                all_off()
+                green.blink()
             else:
-                pass
+                all_off()
+                red.blink()
+            await asyncio.sleep(interval)
 
-            await asyncio.sleep(t)
-
-    loop.run_until_complete(loop.create_task(check_magmad_status(1)))
+    service.loop.create_task(check_magmad_status(1))
 
     # Run the service loop
-    # service.run()
+    service.run()
 
     # Cleanup the service
     service.close()
