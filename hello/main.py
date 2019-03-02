@@ -66,20 +66,21 @@ def main():
 
     async def check_magmad_status(interval):
         while True:
-	    metrics = client.GetMetrics(Void())
-
-            status = 0.0
-            for family in metrics.family:
-                if family.name == "308":
-                    status = family.metric[0].gauge.value
-            logging.info("LED: checkin status: %s" % status)
-
-            if status == 1.0:
-                all_off()
-                green.blink()
-            else:
-                all_off()
-                red.blink()
+            try:
+                metrics = client.GetMetrics(Void())
+                status = 0.0
+                for family in metrics.family:
+                    if family.name == "308":
+                        status = family.metric[0].gauge.value
+                logging.info("LED: checkin status: %s" % status)
+                if status == 1.0:
+                    all_off()
+                    green.blink()
+                else:
+                    all_off()
+                    red.blink()
+            except Exception:
+                pass
             await asyncio.sleep(interval)
 
     service.loop.create_task(check_magmad_status(1))
