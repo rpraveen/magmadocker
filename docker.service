@@ -1,0 +1,7 @@
+[Unit]
+Description=Docker
+
+[Service]
+ExecStartPre=/bin/sleep 1
+ExecStart=docker-compose up -d -f ~/src/magmadocker/docker-compose.yml
+ExecStop=docker-compose down -f ~/src/magmadocker/docker-compose.yml
