@@ -2,6 +2,7 @@ version: "3.7"
 
 services:
   gateway:
+    privileged: true
     build:
       context: ../magma
       dockerfile: $PWD/Dockerfile
